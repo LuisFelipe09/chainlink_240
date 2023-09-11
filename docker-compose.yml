@@ -1,0 +1,18 @@
+services:
+  pg_chainlink:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    env_file:
+      - database.env
+    volumes:
+      - ./data:/va/lib/postgressql/data/
+  chainlink:
+    image: "smartcontract/chainlink:2.4.0"
+    depends_on:
+      - pg_chainlink
+    ports:
+      - "6688:6688"
+    volumes:
+      - ./.chainlink-sepolia:/chainlink/
+    command: node -config /chainlink/config.toml -secrets /chainlink/secrets.toml start -a /chainlink/.api
